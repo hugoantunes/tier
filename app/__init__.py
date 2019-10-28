@@ -3,7 +3,7 @@ import os
 from app import settings
 from flask import Flask
 
-from app.views import hello_world, UrlHandler
+from app.views import hello_world, UrlHandler, RedirectHandler
 
 
 def create_app():
@@ -24,5 +24,12 @@ def create_app():
         '/url',
         view_func=url_view,
         methods=['POST']
+    )
+
+    url_view = RedirectHandler.as_view('redirect_api')
+    app.add_url_rule(
+        '/<string:url_short>',
+        view_func=url_view,
+        methods=['GET']
     )
     return app

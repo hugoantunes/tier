@@ -1,7 +1,7 @@
 import urllib.parse
 from uuid import uuid5, NAMESPACE_URL
 
-from flask import request, json
+from flask import request, json, redirect
 from flask.views import MethodView
 
 from app.db import db
@@ -32,3 +32,14 @@ class UrlHandler(MethodView):
         }
 
         return(response, 200)
+
+
+class RedirectHandler(MethodView):
+
+    header = {'Content-Type': 'application/json; charset=UTF-8'}
+
+    def get(self, url_short=None):
+        original = db.get(f'{url_short}:original')
+        if original:
+            db.incr(f'{url_short}:counter')
+            return redirect(original, 301)
